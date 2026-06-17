@@ -44,7 +44,7 @@ const errorsServer = validateSync(configServer)
 
 if (errorsServer.length) {
   console.log('Các giá trị trong .env không hợp lệ')
-  const errors = errorsServer?.map((item) => {
+  const errors: any = errorsServer?.map((item) => {
     return {
       property: item.property,
       value: item.value,
