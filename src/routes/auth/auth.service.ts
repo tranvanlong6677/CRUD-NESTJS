@@ -2,6 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { HashingService } from 'src/shared/services/hashing.service'
 import { PrismaService } from 'src/shared/services/prisma.service'
+import { RegisterBodyDto } from './auth.dto'
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     private readonly hashingService: HashingService,
   ) {}
 
-  async register(body: any) {
+  async register(body: RegisterBodyDto) {
     try {
       const hashPassword = await this.hashingService.hash(body.password)
       const user = await this.prismaService.user.create({
