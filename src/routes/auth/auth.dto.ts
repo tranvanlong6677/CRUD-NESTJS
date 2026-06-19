@@ -1,5 +1,6 @@
 import { Exclude, Expose, Type } from 'class-transformer'
-import { IsDate, IsEmail, IsString } from 'class-validator'
+import { IsDate, IsEmail, IsNumber, IsString } from 'class-validator'
+import { SuccessResDto } from 'src/shared/shared.dto'
 
 export class LoginBodyDto {
   @IsString()
@@ -20,10 +21,10 @@ export class RegisterBodyDto extends LoginBodyDto {
   confirmPassword: string
 }
 
-export class RegisterResDto {
-  @IsString()
+export class RegisterResDto extends SuccessResDto {
+  @IsNumber()
   @Expose()
-  id: string
+  id: number
   @IsString()
   @Expose()
   name: string
@@ -46,6 +47,7 @@ export class RegisterResDto {
   password: string
 
   constructor(partial: Partial<RegisterResDto>) {
+    super(partial)
     Object.assign(this, partial)
   }
 

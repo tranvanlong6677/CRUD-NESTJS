@@ -7,8 +7,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  @SerializeOptions({ type: RegisterResDto })
-  register(@Body() body: RegisterBodyDto) {
-    return this.authService.register(body)
+  // @SerializeOptions({ type: RegisterResDto })
+  async register(@Body() body: RegisterBodyDto) {
+    const res = await this.authService.register(body)
+    return new RegisterResDto(res)
   }
 }
