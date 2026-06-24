@@ -90,3 +90,9 @@ export class RegisterResDto extends SuccessResDto {
     return `${this.email}-${this.name}`
   }
 }
+
+export class RefreshTokenBodyDTO {
+  @IsString()
+  @Expose()
+  refreshToken: string
+}

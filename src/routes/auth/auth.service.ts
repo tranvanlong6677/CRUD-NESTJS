@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnprocessableEntityException } from '@nestjs/common'
+import { ConflictException, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { HashingService } from 'src/shared/services/hashing.service'
 import { PrismaService } from 'src/shared/services/prisma.service'
@@ -72,5 +72,22 @@ export class AuthService {
     }
 
     return this.generateTokens(user.id)
+  }
+
+  async handleTokenRefresh(refreshToken: string) {
+    try {
+      const { userId } = await this.jwtService.verifyRefreshToken(refreshToken)
+
+      await this.prismaService.refreshToken.findUniqueOrThrow({
+        where: { token: refreshToken },
+      })
+
+      return this.generateTokens(userId)
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        throw new UnauthorizedException('Refresh token has been revoked')
+      }
+      throw error
+    }
   }
 }

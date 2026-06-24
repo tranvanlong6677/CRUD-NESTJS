@@ -4,6 +4,7 @@ import { JwtService as Jwt } from '@nestjs/jwt'
 import type { User } from '@prisma/client'
 import type { StringValue } from 'ms'
 import envConfig from '../config'
+import type { AccessTokenPayload, RefreshTokenPayload } from '../types/jwt.type'
 
 @Injectable()
 export class JwtService {
@@ -29,15 +30,13 @@ export class JwtService {
     })
   }
 
-  // Verify Access Token
-  verifyAccessToken(token: string) {
+  verifyAccessToken(token: string): Promise<AccessTokenPayload> {
     return this.jwt.verifyAsync(token, {
       secret: envConfig.ACCESS_TOKEN_SECRET,
     })
   }
 
-  // Verify Refresh Token
-  verifyRefreshToken(token: string) {
+  verifyRefreshToken(token: string): Promise<RefreshTokenPayload> {
     return this.jwt.verifyAsync(token, {
       secret: envConfig.REFRESH_TOKEN_SECRET,
     })

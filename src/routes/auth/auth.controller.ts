@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { LoginBodyDto, RegisterBodyDto, RegisterResDto } from './auth.dto'
+import { LoginBodyDto, RefreshTokenBodyDTO, RegisterBodyDto, RegisterResDto } from './auth.dto'
 import { ResponseMessage } from 'src/shared/decorators/response-message.decorator'
 
 @Controller('auth')
@@ -18,5 +18,12 @@ export class AuthController {
   @ResponseMessage('Đăng nhập thành công')
   async login(@Body() body: LoginBodyDto) {
     return this.authService.login(body)
+  }
+
+  @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
+  @ResponseMessage('Refresh token thành công')
+  async refreshToken(@Body() body: RefreshTokenBodyDTO) {
+    return this.authService.handleTokenRefresh(body.refreshToken)
   }
 }
