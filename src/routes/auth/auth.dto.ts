@@ -21,6 +21,40 @@ export class RegisterBodyDto extends LoginBodyDto {
   confirmPassword: string
 }
 
+export class LoginResDto extends SuccessResDto {
+  @IsString()
+  @Expose()
+  accessToken: string
+
+  @IsString()
+  @Expose()
+  refreshToken: string
+
+  @IsString()
+  @Expose()
+  @IsEmail()
+  email: string
+
+  @IsString()
+  @Expose()
+  name: string
+
+  @Type(() => Date)
+  @IsDate()
+  @Expose()
+  createdAt: Date
+
+  @Type(() => Date)
+  @IsDate()
+  @Expose()
+  updatedAt: Date
+
+  constructor(partial: Partial<LoginResDto>) {
+    super(partial)
+    Object.assign(this, partial)
+  }
+}
+
 export class RegisterResDto extends SuccessResDto {
   @IsNumber()
   @Expose()

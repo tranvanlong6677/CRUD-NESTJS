@@ -1,14 +1,16 @@
-import { ConflictException, Injectable } from '@nestjs/common'
+import { ConflictException, Injectable, UnprocessableEntityException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { HashingService } from 'src/shared/services/hashing.service'
 import { PrismaService } from 'src/shared/services/prisma.service'
-import { RegisterBodyDto } from './auth.dto'
+import { LoginBodyDto, RegisterBodyDto } from './auth.dto'
+import { JwtService } from 'src/shared/services/jwt.service'
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly hashingService: HashingService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async register(body: RegisterBodyDto) {
@@ -30,5 +32,45 @@ export class AuthService {
 
       throw error
     }
+  }
+
+  async generateTokens(userId: number) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAccessToken({ userId }),
+      this.jwtService.signRefreshToken({ userId }),
+    ])
+
+    const decodedRefreshToken = await this.jwtService.verifyRefreshToken(refreshToken)
+
+    await this.prismaService.$transaction([
+      this.prismaService.refreshToken.deleteMany({ where: { userId } }),
+      this.prismaService.refreshToken.create({
+        data: {
+          token: refreshToken,
+          userId,
+          expiresAt: new Date(decodedRefreshToken.exp * 1000),
+        },
+      }),
+    ])
+
+    return { accessToken, refreshToken }
+  }
+
+  async login(body: LoginBodyDto) {
+    const user = await this.prismaService.user.findUnique({
+      where: { email: body.email },
+    })
+
+    if (!user) {
+      throw new UnprocessableEntityException([{ field: 'email', error: 'Email không tồn tại' }])
+    }
+
+    const isPasswordValid = await this.hashingService.compare(body.password, user.password)
+
+    if (!isPasswordValid) {
+      throw new UnprocessableEntityException([{ field: 'password', error: 'Password is not correct' }])
+    }
+
+    return this.generateTokens(user.id)
   }
 }

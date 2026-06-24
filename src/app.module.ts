@@ -4,9 +4,10 @@ import { AppService } from './app.service'
 import { PostsModule } from './routes/posts/posts.module'
 import { SharedModule } from './shared/shared.module'
 import { AuthModule } from './routes/auth/auth.module'
-import { APP_INTERCEPTOR } from '@nestjs/core'
+import { APP_FILTER, APP_INTERCEPTOR, Reflector } from '@nestjs/core'
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor'
 import { TransformInterceptor } from './shared/interceptors/transform.interceptor'
+import { HttpExceptionFilter } from './shared/filters/http-exception.filter'
 
 @Module({
   imports: [PostsModule, SharedModule, AuthModule],
@@ -25,6 +26,11 @@ import { TransformInterceptor } from './shared/interceptors/transform.intercepto
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
+    },
+    Reflector,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
     },
   ],
 })
