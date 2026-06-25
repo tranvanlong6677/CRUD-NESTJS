@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { PostsService } from './posts.service'
-import { CreatePostDto } from './dto/create-post.dto'
 import { Auth } from 'src/shared/decorators/auth.decorator'
-import { AuthType } from 'src/shared/enums/auth-type.enum'
+import { AuthOptionsType, AuthType } from 'src/shared/enums/auth-type.enum'
+import { ActiveUser } from 'src/shared/decorators/active-user.decorator'
+import { GetPostItemDto } from './posts.dto'
 // import { Auth } from 'src/shared/decorators/auth.decorator'
 // import { AuthType } from 'src/shared/enums/auth-type.enum'
 
@@ -11,12 +12,14 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Body() bodyCreate: CreatePostDto) {
-    return this.postsService.create(bodyCreate)
+  @Auth([AuthType.Bearer])
+  create(@Body() bodyCreate: any, @ActiveUser('userId') userId: number) {
+    return this.postsService.create(bodyCreate, userId)
   }
   @Get()
-  findAll() {
-    return this.postsService.findAll()
+  @Auth([AuthType.Bearer, AuthType.APIKey], { condition: AuthOptionsType.AND })
+  findAll(@ActiveUser('userId') userId: number) {
+    return this.postsService.getPosts(userId).then((res) => res.map((item) => new GetPostItemDto(item)))
   }
 
   @Get(':id')
