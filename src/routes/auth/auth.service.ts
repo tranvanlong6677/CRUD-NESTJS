@@ -1,5 +1,4 @@
 import { ConflictException, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import { HashingService } from 'src/shared/services/hashing.service'
 import { PrismaService } from 'src/shared/services/prisma.service'
 import { LoginBodyDto, RegisterBodyDto } from './auth.dto'
