@@ -29,6 +29,10 @@ class ConfigSchema {
   @IsString()
   @IsNotEmpty()
   REFRESH_TOKEN_EXPIRES_IN: string
+
+  @IsString()
+  @IsNotEmpty()
+  SECRET_API_KEY: string
 }
 
 export const config: ConfigSchema = {
@@ -37,6 +41,7 @@ export const config: ConfigSchema = {
   ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN ?? '',
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET ?? '',
   REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN ?? '',
+  SECRET_API_KEY: process.env.SECRET_API_KEY ?? '',
 }
 
 const configServer = plainToInstance(ConfigSchema, process.env)
