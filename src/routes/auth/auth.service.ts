@@ -90,4 +90,10 @@ export class AuthService {
       throw error
     }
   }
+
+  async logout({ userId, refreshToken }: { userId: number; refreshToken: string }) {
+    await this.prismaService.refreshToken.delete({
+      where: { token: refreshToken, userId },
+    })
+  }
 }

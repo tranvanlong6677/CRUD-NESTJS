@@ -9,8 +9,8 @@ export interface AuthOptions {
   condition?: AuthOptionsType
 }
 
-export const Auth = (authTypes: AuthType | AuthType[], options: AuthOptions = { condition: AuthOptionsType.OR }) =>
+export const Auth = (authTypes: AuthType | AuthType[], options?: AuthOptions) =>
   SetMetadata(AUTH_TYPE_KEY, {
     authTypes: Array.isArray(authTypes) ? authTypes : [authTypes],
-    condition: options.condition ?? AuthOptionsType.OR,
+    condition: options?.condition ?? AuthOptionsType.AND,
   })

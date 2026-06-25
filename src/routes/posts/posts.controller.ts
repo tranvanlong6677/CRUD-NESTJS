@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { PostsService } from './posts.service'
 import { CreatePostDto } from './dto/create-post.dto'
+import { Auth } from 'src/shared/decorators/auth.decorator'
+import { AuthType } from 'src/shared/enums/auth-type.enum'
 // import { Auth } from 'src/shared/decorators/auth.decorator'
 // import { AuthType } from 'src/shared/enums/auth-type.enum'
 
@@ -23,11 +25,13 @@ export class PostsController {
   }
 
   @Put(':id')
+  @Auth(AuthType.Bearer)
   update(@Param('id') id: string, @Body() bodyUpdate: any) {
     return this.postsService.update(id, bodyUpdate)
   }
 
   @Delete(':id')
+  @Auth(AuthType.Bearer)
   remove(@Param('id') id: string) {
     return this.postsService.remove(id)
   }

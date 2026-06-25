@@ -33,4 +33,12 @@ export class AuthController {
 
     return this.authService.handleTokenRefresh(body.refreshToken)
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.Bearer)
+  @ResponseMessage('Logout thành công')
+  async logout(@Body() body: RefreshTokenBodyDTO, @ActiveUser() user: AccessTokenPayload) {
+    return this.authService.logout({ userId: user.userId, refreshToken: body.refreshToken })
+  }
 }
