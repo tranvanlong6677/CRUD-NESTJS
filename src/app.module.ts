@@ -8,7 +8,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, Reflector } from '@nestjs/core'
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor'
 import { TransformInterceptor } from './shared/interceptors/transform.interceptor'
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter'
-import { AccessTokenGuard } from './shared/guards/access-token.guard'
+import { AuthGuard } from './shared/guards/auth.guard'
 
 @Module({
   imports: [PostsModule, SharedModule, AuthModule],
@@ -33,7 +33,7 @@ import { AccessTokenGuard } from './shared/guards/access-token.guard'
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    { provide: APP_GUARD, useClass: AccessTokenGuard },
+    { provide: APP_GUARD, useClass: AuthGuard },
   ],
 })
 export class AppModule {}

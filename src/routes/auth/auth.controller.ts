@@ -2,12 +2,13 @@ import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs
 import { AuthService } from './auth.service'
 import { LoginBodyDto, RefreshTokenBodyDTO, RegisterBodyDto, RegisterResDto } from './auth.dto'
 import { ResponseMessage } from 'src/shared/decorators/response-message.decorator'
-import { IsPublic } from 'src/shared/decorators/is-public.decorator'
+import { Auth } from 'src/shared/decorators/auth.decorator'
+import { AuthType } from 'src/shared/enums/auth-type.enum'
 import { ActiveUser } from 'src/shared/decorators/active-user.decorator'
 import type { AccessTokenPayload } from 'src/shared/types/jwt.type'
 
 @Controller('auth')
-@IsPublic()
+@Auth(AuthType.None)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

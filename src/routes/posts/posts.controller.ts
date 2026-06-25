@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { PostsService } from './posts.service'
 import { CreatePostDto } from './dto/create-post.dto'
+// import { Auth } from 'src/shared/decorators/auth.decorator'
+// import { AuthType } from 'src/shared/enums/auth-type.enum'
 
 @Controller('posts')
 export class PostsController {
