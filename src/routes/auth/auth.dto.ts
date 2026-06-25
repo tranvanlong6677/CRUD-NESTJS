@@ -1,6 +1,7 @@
 import { Exclude, Expose, Type } from 'class-transformer'
-import { IsDate, IsEmail, IsNumber, IsString } from 'class-validator'
+import { IsDate, IsEmail, IsNumber, IsString, Length } from 'class-validator'
 import { SuccessResDto } from 'src/shared/shared.dto'
+import { Match } from 'src/shared/decorators/match.decorator'
 
 export class LoginBodyDto {
   @IsString()
@@ -9,6 +10,7 @@ export class LoginBodyDto {
   email: string
   @IsString()
   @Expose()
+  @Length(6, 20, { message: 'Password must be between 6 and 20 characters' })
   password: string
 }
 
@@ -18,6 +20,7 @@ export class RegisterBodyDto extends LoginBodyDto {
   name: string
   @IsString()
   @Expose()
+  @Match('password', { message: 'Confirm password must match password' })
   confirmPassword: string
 }
 

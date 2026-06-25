@@ -4,6 +4,7 @@ import { HashingService } from 'src/shared/services/hashing.service'
 import { PrismaService } from 'src/shared/services/prisma.service'
 import { LoginBodyDto, RegisterBodyDto } from './auth.dto'
 import { JwtService } from 'src/shared/services/jwt.service'
+import { isNotFoundPrismaError } from 'src/shared/helper'
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,7 @@ export class AuthService {
 
       return user
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      if (isNotFoundPrismaError(error)) {
         throw new ConflictException(`Email ${body.email} already exists`)
       }
 
@@ -84,7 +85,7 @@ export class AuthService {
 
       return this.generateTokens(userId)
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+      if (isNotFoundPrismaError(error)) {
         throw new UnauthorizedException('Refresh token has been revoked')
       }
       throw error
